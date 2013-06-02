@@ -13,3 +13,8 @@ class SnailItem(Item):
 class PostItem(SnailItem):
     __name__ = Field()
     name = Field()
+    title = Field()
+    author = Field()
+    publish_time = Field()
+    
+    content = Field()

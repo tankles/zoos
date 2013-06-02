@@ -14,20 +14,35 @@ class MainSpider(CrawlSpider):
     name = 'snailSpider'  
     rules = (  
         #下面是符合规则的网址,但是不抓取内容,只是提取该页的链接
-        #Rule(SgmlLinkExtractor(allow=(r'http://sale.jd.com/'))),  
+        #Rule(SgmlLinkExtractor(allow=(r'/topics/'))),  
+        #Rule(SgmlLinkExtractor(allow=(r'/commands'))),  
         #下面是符合规则的网址,提取内容
-        Rule(SgmlLinkExtractor(allow=(r'/team-\d+')), callback="parse_item"),  
+        #Rule(SgmlLinkExtractor(allow=(r'/commands')), callback="parse_item"),  
+        Rule(SgmlLinkExtractor(allow=(r'/topics/\w+')), callback="parse_topics"),  
+        Rule(SgmlLinkExtractor(allow=(r'/topics/\w+')), callback="parse_topics"),  
     )  
 
     def start_requests(self):
 	#self.allowed_domains = ['jd.com']
 	# load seeds
 	start_urls = [
-            "http://tuan.jd.com/beijing-0-0-0-0-0-0-1-0-0.html",
+            #"http://www.redis.io/documentation",
+            "http://blog.csdn.net/tankles",
     	]  
 	for url in start_urls:
 	    yield self.make_requests_from_url(url)
 
+    def parse_topics(self, response):  
+        hxs = HtmlXPathSelector(response)  
+	item = PostItem()
+	print 'AAAAAAAAAAAAAAAAAAAAAAAAA: parse_item'
+	item['name'] = 'topics'
+	# 提取内容
+	item['title'] = hxs.select('//').extract()
+	print item['title']
+	
+	return item
+	
     def parse_item(self, response):  
         hxs = HtmlXPathSelector(response)  
         item = PostItem()  
